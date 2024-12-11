@@ -1,0 +1,71 @@
+take the minimum of several runs
+
+greedilyOptimizeAllVertices()
+    optimize all vertices
+
+greedilyOptimizeAllEdges()
+    for each edge (u,v), optimize the set {a,b}
+    repeat until no more improvements are possible
+
+if a solution is edge-optimal, then it is necessarily vertex-optimal
+
+evolutionary algorithm: start with many instances; slowly kill of bad ones
+
+draw graphs / plots of performance on various graphs, of various algorithms
+
+execute D-wave on several of these instances
+
+make an instance that can be executed well on D-Wave's architecture
+
+- refactor a bunch of code to use networkx.graph
+- take a random subset of a Chimera graph
+
+find out how to map instances to the D-Wave topology, bypassing D-Wave's own tools
+purpose: design instances relying on D-Wave's topology, so that D-Wave gets the maximum possible opportunity to demonstrate quantum advantage
+
+- on Chimera graphs of various sizes:
+    - take a random subset; sample from the maximum cut using own best algorithms many times
+    - submit it to D-Wave a few times
+    - sort both by solution quality (i.e., by descending penalty)
+
+draw conclusion:
+    - Does D-Wave show quantum advantage for Max-Cut problem?
+        - what is the quality of solutions D-Wave delivers?
+            - on its own optimal topology?
+            - on small instances?
+            - on large instances?
+
+algorithm to detect clusters
+    A collection of sets of vertices is a good set of clusters when each vertex has more neighbours within its cluster than outside of it
+    So, randomly divide the vertices into k clusters.
+    Then, say that each vertex attracts its neighbours into its cluster with a force proportional to 1/num neighbours.
+    That is, each vertex has like 100 points to spend, and it spends it equally on its neighbours, so its 5 neighborus each get 20 points in its direction
+    So, each vertex receives in total 100 points from its neighbours asking it to become part of their clusters.
+    Each vertex then chooses to become part of the cluster that asks for it the most
+    This obviously doesn't work in a bipartite graph very well, if the clusters are initialized as the 2 parts...
+    perhaps: conditioned on dividing the vertices into k equal-size clusters, optimize the penalty function which assigns 1 penalty to every inter-cluster edge
+
+once we have clusters, we can optimize each cluster very quickly; then we can optimzie inter-cluster relations later
+
+LOW PRIORITY
+
+fractalPartition()
+    make a partition by setting ahead of time the sizes of the blocks as 1,2,4,8,16, etc
+    fill each block with randomly chosen vertices
+
+DONE
+
++ def optimizeLocal()
+    optimize a local patch of the solution:
+    choose a random node, and several nodes in its neighbourhood
+    optimize this set
+
++ def optimizePartition(graph, solution, partition)
+    optimize only the vertices in the partition
+    the partition need not cover all vertices
+
++ optimizeLocal2()
+    S := choose a random vertex and some number of nearby vertices
+    P := divide S into k partitions
+    optimizePartition(P)
+
