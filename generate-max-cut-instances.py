@@ -57,6 +57,6 @@ def getRandomGraph(numVertices, numEdges):
         graph.add((v1, v2))
     return graph
 
-# for g in range(0, numGraphs):
-#     graph = getRandomGraph(numVertices, numEdges);
-#     printGraphToCsv(graph, 'max-cut-catalogue/graph-' + str(numVertices) + '-' + str(g) + '.csv')
+for g in range(0, numGraphs):
+    graph = getRandomGraph(numVertices, numEdges);
+    write_graph_utils.printGraphToCsv(graph, 'max-cut-catalogue/graph-' + str(numVertices) + '-' + str(g) + '.csv')

@@ -3,9 +3,58 @@ take the minimum of several runs
 greedilyOptimizeAllVertices()
     optimize all vertices
 
-greedilyOptimizeAllEdges()
++ greedilyOptimizeAllEdges()
     for each edge (u,v), optimize the set {a,b}
     repeat until no more improvements are possible
++ optimize so that the evaluation function is not called so often
++ evaluateSolutionAfterFlippingPartition(graph, solution, partition, flips)
+    returns the evaluation function after flipping the appropriate nodes
+    this is much faster than calling evaluateSolution(), which iterates over all the graph's edges
+- evaluateSolutionAfterFlippingPartition_super_fast
+    in the case of large neighbourhood and few blocks (e.g., |nbh| = 200, numBlocks = 10, which is quite common)
+    we can evaluate the thing faster by counting weighted edges, instead of evaluating all the edges
+    complexity becomes only O(num_blocks ^ 2) instead of O(|nbh|)
+    - use numpy to allocate fast arrays
+    - use a persistent array, instead of one that is reallocated 
+
+- try out a simple heuristic:
+    choose a random vertex
+    construct its neighbourhood
+    flip a random set of vertices, with probability p = 0.5
+    repeat some number of times. take the best outcome.
+    Observation. This is not much less directed than the brute force attack involving partitions;
+    it is, however, much simpler.
+    We can play around with 3 parameters: the flip probability, the neighbourhood size, and the budget per neighbourhood
+
+- modify the above heuristic:
+    get a random neighbourhood
+    flip a random set of vertices, with p=0.5
+    optimize each edge within the neighbourhood, after this flip
+    compute utility after both these operations
+    choose the best candidate
+    This way, we are not bound by investigating exactly 2^n options
+    I guess the optimal schedule starts with the neighbourhood first is the whole graph, with p=0.5
+        i.e., choose a couple of completely random, independent samples
+    then slowly decrease the neighbourhood size, decrease p, and increase the budget per neighbourhood
+
+- optimize a line in the graph
+    FRom a starting vertex, perform depth-first search to get a line, i.e., a set of vertices v1, v2 ... vm such that only v(i)--v(i+1) are edges
+    
+
+- optimize a biclique
+
++ refactor solve_max_cut so there are 2 possible optimization steps:
+    1. optimize neighbourhood
+    2. shake up and then optimize neighbourhood
+    + refactor so the code is a bit more neat
+
+- use bandit theory to make a decision one way or the other, given the budget
+
+Idea for an algorithm:
+    Get a small set of vertices S as reference points, |S|=k
+    for each vertex, compute the distances to these reference points
+    this yields a vector in Z^k for each vector, it's a feature vector
+    categorize each vertex in block 0 or block 1 depending on whether its feature vector contains majority even or majority odd numbers
 
 if a solution is edge-optimal, then it is necessarily vertex-optimal
 
